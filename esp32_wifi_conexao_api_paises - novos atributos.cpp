@@ -69,40 +69,64 @@ void setup() {
       
       // Check if doc is an array
       if (doc.is<JsonArray>()) {
+
         JsonArray array = doc.as<JsonArray>();
 
         // Iterate through the array using index
         for (size_t i = 0; i < array.size(); i++) {
+          
           JsonObject country = array[i].as<JsonObject>();
 
-          // Extract "common" and "official" names
-          const char* commonName = country["name"]["common"];
-          const char* officialName = country["name"]["official"];
+          const char* region = country["region"];
+          const char* subregion = country["subregion"];
 
           // Print the extracted values
-          Serial.print("Common Name: ");
-          Serial.println(commonName);
-          Serial.print("Official Name: ");
-          Serial.println(officialName);
+          Serial.print("Region: ");
+          Serial.println(region);
+          Serial.print("Subregion: ");
+          Serial.println(subregion);
           Serial.println(); // Print a blank line for readability
+        }
 
-          JsonObject nativeNames = country["name"]["nativeName"];
-    
-          // Iterate over each language entry in nativeName
-          for (JsonPair kv : nativeNames) {
-            JsonObject nameObject = kv.value().as<JsonObject>();
-            const char* officialNative = nameObject["official"];
-            const char* commonNative = nameObject["common"];
-    
+        Serial.print("Languages 1: \n");
+
+        // Iterate through the array using index
+        for (size_t i = 0; i < array.size(); i++) {
+          
+          JsonObject languages = array[i].as<JsonObject>();
+
+          const char* fra = languages["languages"]["fra"];
+          const char* gsw = languages["languages"]["gsw"];
+          const char* ita = languages["languages"]["ita"];
+          const char* roh = languages["languages"]["roh"];
+
+          // Print the extracted values
+          Serial.print("fra: ");
+          Serial.println(fra);
+          Serial.print("gsw: ");
+          Serial.println(gsw);
+          Serial.print("ita: ");
+          Serial.println(ita);
+          Serial.print("roh: ");
+          Serial.println(roh);
+          Serial.println(); // Print a blank line for readability
+        } 
+
+        JsonObject country = array[0].as<JsonObject>();
+
+        JsonObject languages2 = country["languages"];
+
+          Serial.print("Languages 2: \n");
+
+          for (JsonPair kv : languages2) {
+  
             Serial.print("Language Code: ");
             Serial.println(kv.key().c_str());  // Prints the language code (e.g., "deu")
-            Serial.print("Official Native Name: ");
-            Serial.println(officialNative);
-            Serial.print("Common Native Name: ");
-            Serial.println(commonNative);
+            Serial.print("Language: ");
+            Serial.println(kv.value().as<const char*>());
             Serial.println();
-          }      
-        }
+          } 
+
       } else {
         Serial.println("The JSON is not an array.");
       }

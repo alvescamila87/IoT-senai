@@ -1,33 +1,3 @@
-/*
-  Autor: Giovanni Rozza
-  Data: 26 de agosto de 2024
-
-  Descrição: 
-  Este código se conecta a uma rede Wi-Fi usando um ESP32 e faz uma requisição HTTP GET 
-  para obter informações sobre um país específico, utilizando a API pública do site 
-  restcountries.com. O código realiza o parsing da resposta JSON utilizando a biblioteca ArduinoJson, 
-  e então exibe no console serial o nome comum e oficial do país, 
-  bem como os nomes nativos em diferentes idiomas, caso existam.
-
-  Funcionalidade:
-  - Conectar-se a uma rede Wi-Fi.
-  - Realizar uma requisição HTTP GET para um servidor especificado.
-  - Parsear a resposta JSON.
-  - Exibir os nomes comuns e oficiais do país, bem como os nomes nativos em diferentes idiomas, no console serial.
-
-  Funções:
-  - void setup(): Configura a conexão Wi-Fi e realiza a requisição HTTP. Parseia e exibe os dados JSON retornados.
-  - void loop(): Mantém o programa rodando, mas não é necessário realizar ações neste contexto específico.
-
-  Dependências:
-  - WiFi.h: Biblioteca para controle do módulo Wi-Fi do ESP32.
-  - HTTPClient.h: Biblioteca para realizar requisições HTTP.
-  - ArduinoJson.h: Biblioteca para manipulação e parsing de JSON.
-
-  URLs:
-  - https://restcountries.com/
-*/
-
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
@@ -35,7 +5,6 @@
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
 const char* serverName = "https://restcountries.com/v3.1/name/swiss";
-//const char* serverName = "https://restcountries.com/v3.1/name/france";
 
 void setup() {
   Serial.begin(115200);
@@ -72,7 +41,9 @@ void setup() {
         JsonArray array = doc.as<JsonArray>();
 
         // Iterate through the array using index
-        for (size_t i = 0; i < array.size(); i++) {
+        for (size_t i = 0; i < array.size(); i++) // laço FOR NEXT PRINCIPAL
+        {
+          // OBJETO PAIS, CONTEM TODOS OS ATRIBUTOS
           JsonObject country = array[i].as<JsonObject>();
 
           // Extract "common" and "official" names
@@ -101,35 +72,43 @@ void setup() {
             Serial.print("Common Native Name: ");
             Serial.println(commonNative);
             Serial.println();
-          }      
-        }
+          }
+          // EXERCICIO
+          // Extrai "altSpellings" array
+          JsonArray altSpellings = country["altSpellings"].as<JsonArray>();
+          Serial.println("Alternate Spellings:");
+          for (size_t j = 0; j < altSpellings.size(); j++) {
+            Serial.print("- ");
+            Serial.println(altSpellings[j].as<const char*>());
+          }
+          Serial.println();
+
+          //EXERCICIO
+          // Extrai "region" and "subregion"
+          const char* region = country["region"];
+          const char* subregion = country["subregion"];
+          Serial.print("Region: ");
+          Serial.println(region);
+          Serial.print("Subregion: ");
+          Serial.println(subregion);
+          Serial.println();
+
+          //EXERCICIO
+          // Extrai "languages" object
+          JsonObject languages = country["languages"];
+          Serial.println("Languages:");
+          for (JsonPair kv : languages) {
+            Serial.print("- ");
+            Serial.print(kv.key().c_str());  // Language code (e.g., "fra")
+            Serial.print(": ");
+            Serial.println(kv.value().as<const char*>());  // Language name (e.g., "French")
+          }
+          Serial.println();
+          
+        } // laço FOR NEXT PRINCIPAL
       } else {
         Serial.println("The JSON is not an array.");
       }
-
-      /* 
-      ***               EXPLICAÇÃO DO CÓDIGO  ****
-      O objeto "nativeName" nos dados JSON tem um único par chave-valor, 
-      onde a chave é "deu" (para o alemão). No código, o loop for (JsonPair kv : nativeNames) 
-      itera sobre cada par chave-valor no objeto "nativeName".
-      Como há apenas um par chave-valor (com a chave "deu"), 
-      o loop será executado apenas uma vez.
-      Dentro do loop, o código cria um JsonObject chamado nameObject e atribui a ele
-      o valor associado à chave atual ("deu").
-      Se houvesse chaves adicionais no objeto "nativeName", 
-      como "en" para o inglês, o loop iteraria duas vezes - uma vez para a chave "deu" e 
-      uma vez para a chave "en".
-      Dentro do JsonObject associado à chave "deu" no objeto "nativeName", 
-       existem outros dois pares chave-valor:
-      
-        * "official" - Que contém o nome oficial nativo em alemão, neste 
-                       caso "Bundesrepublik Deutschland".
-        * "common" - Que contém o nome comum nativo em alemão, neste caso "Deutschland".
-      
-        https://arduinojson.org/v6/api/jsonobject/begin_end/
-      
-      */
-      
     } else {
       Serial.println("Erro na requisição HTTP");
     }
