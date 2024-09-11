@@ -1,9 +1,9 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define RED_LED 32
-#define YELLOW_LED 33
-#define GREEN_LED 18
+#define RED_LED 15
+#define YELLOW_LED 22
+#define GREEN_LED 33
 
 // O fio de dados é conectado no GPIO do ESP32
 #define ONE_WIRE_BUS 4 // usando o GPIO 4
@@ -27,7 +27,7 @@ void setup(void)
 void loop(void)
 {
 
-   float temperature = leTemperatura();
+   float temperature = checaTemperatura();
 
 
     // Exibe a temperatura em Celsius
@@ -37,19 +37,21 @@ void loop(void)
 
     // Controla os LEDs baseado na temperatura
     if (temperature <= 15.0) {
+        Serial.println("Acende LED VERDE");
         digitalWrite(RED_LED, LOW);
         digitalWrite(YELLOW_LED, LOW);
         digitalWrite(GREEN_LED, HIGH);
     } 
     else if (temperature > 15.0 && temperature <= 25.0) {
 
-        Serial.println("entra no amarelo");
+        Serial.println("Acende LED AMARELO");
         digitalWrite(YELLOW_LED, HIGH);
         digitalWrite(RED_LED, LOW);
         digitalWrite(GREEN_LED, LOW);
    
     }
     else {
+        Serial.println("Acende LED VERMELHO");
         digitalWrite(GREEN_LED, LOW);
         digitalWrite(YELLOW_LED, LOW);
         digitalWrite(RED_LED, HIGH);
@@ -59,9 +61,9 @@ void loop(void)
 }
 
 
-float leTemperatura()
+float checaTemperatura()
 {
-  float temperatura = 16.00;
+  float temperatura = 32.0;
 
   //Manda comando para ler temperaturas
   sensors.requestTemperatures();
