@@ -7,6 +7,6 @@ package edu.senai.br.projetosaiot;
 public class ProjetoSaIoT {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        System.out.println("Start project IoT");
     }
 }
