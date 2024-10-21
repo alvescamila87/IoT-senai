@@ -11,4 +11,12 @@
         <maven.compiler.target>20</maven.compiler.target>
         <exec.mainClass>edu.senai.br.jdbc.Jdbc</exec.mainClass>
     </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.28</version>
+        </dependency>
+    </dependencies>
 </project>
