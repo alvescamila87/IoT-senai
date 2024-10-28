@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import edu.senai.br.jdbc.entities.Categoria;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -31,6 +33,32 @@ public class CategoriaDAO {
             }
 
         }
+    }
+    
+     // Buscar por ID
+     public Categoria buscarCategoriaPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM Categoria WHERE id = ?";
+        try (Connection conn = ConexaoDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Categoria(rs.getInt("id"), rs.getString("nome"));
+            }
+        }
+        return null;
+    }
+    
+     // Listar
+    public List<Categoria> listarCategoria() throws SQLException {
+        String sql = "SELECT * FROM Categoria";
+        List<Categoria> categorias = new ArrayList<>();
+        try (Connection conn = ConexaoDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                categorias.add(new Categoria(rs.getInt("id"), rs.getString("nome")));
+        }
+    }
+    
+        return categorias;
     }
     
 }
