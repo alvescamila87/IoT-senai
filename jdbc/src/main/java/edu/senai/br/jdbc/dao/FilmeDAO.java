@@ -16,20 +16,22 @@ public class FilmeDAO {
     
     // Create
     public void inserirFilme(Filme filme) throws SQLException {
-        String sql = "INSERT INTO Filme (nome) VALUES (?)";
-        try (Connection conn = ConexaoDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, filme.getTitulo());
-            stmt.executeUpdate();
-
-            // Capturar o ID gerado automaticamente
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    filme.setId(generatedKeys.getInt(1));  // Definir o ID no objeto Categoria
-                } else {
-                    throw new SQLException("Falha ao inserir filme, nenhum ID gerado.");
+        String sql = "INSERT INTO Filme (titulo) values (?)";
+        try (Connection connection = ConexaoDB.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {            
+                preparedStatement.setString(1, filme.getTitulo());
+                preparedStatement.executeUpdate();
+                
+                // Capturar o ID gerado automaticamente
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if(generatedKeys.next()) {
+                        filme.setId(generatedKeys.getInt(1)); // Definir o ID no objeto Filme
+                    } else {
+                        throw new SQLException("Falha ao inserir filme, nenhum ID gerado.");
+                    }
                 }
-            }
-
+                
         }
     }
+    
 }
