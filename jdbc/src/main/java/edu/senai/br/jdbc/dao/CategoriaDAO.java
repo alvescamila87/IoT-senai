@@ -47,18 +47,53 @@ public class CategoriaDAO {
         }
         return null;
     }
+     
+     // Buscar por Nome
+     public Categoria buscarCategoriaPorNome(String nome) throws SQLException {
+         String sql = "SELECT * FROM Categoria WHERE nome = ?";
+         try (Connection conn = ConexaoDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+             stmt.setString(1, nome);
+             ResultSet rs = stmt.executeQuery();
+             if(rs.next()) {
+                 return new Categoria(rs.getInt("id"), rs.getString("nome"));
+             }
+         }
+         return null;
+     }
     
      // Listar
-    public List<Categoria> listarCategoria() throws SQLException {
+    public List<Categoria> listarCategorias() throws SQLException {
         String sql = "SELECT * FROM Categoria";
         List<Categoria> categorias = new ArrayList<>();
-        try (Connection conn = ConexaoDB.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = ConexaoDB.getConnection(); 
+                PreparedStatement stmt = conn.prepareStatement(sql); 
+                ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 categorias.add(new Categoria(rs.getInt("id"), rs.getString("nome")));
+            }
+        }    
+        return categorias;
+    }
+    
+    // Update
+    public void atualizarCategoria(Categoria categoria) throws SQLException {
+        String sql = "UPDATE Categoria SET nome = ? WHERE id = ?";
+        try (Connection connection = ConexaoDB.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, categoria.getNome());
+            preparedStatement.setInt(2, categoria.getId());
+            preparedStatement.executeUpdate();            
         }
     }
     
-        return categorias;
+    // Delete 
+    public void deletarCategoria(int id) throws SQLException {
+        String sql = "DELETE FROM Categoria WHERE id = ?";
+        try (Connection conn = ConexaoDB.getConnection(); 
+            PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        }
     }
     
 }

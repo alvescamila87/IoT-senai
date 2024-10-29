@@ -4,6 +4,7 @@ package edu.senai.br.jdbc;
 import edu.senai.br.jdbc.dao.CategoriaDAO;
 import edu.senai.br.jdbc.entities.Categoria;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -11,7 +12,7 @@ import java.sql.SQLException;
  */
 public class Jdbc {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         try {
             CategoriaDAO categoriaDAO = new CategoriaDAO();
             
@@ -27,8 +28,34 @@ public class Jdbc {
             categoriaDAO.inserirCategoria(categoria3);
             categoriaDAO.inserirCategoria(categoria4);
             
-        } catch (SQLException e){
+            // Buscar categoria por ID
+            Categoria categoriaPesquisada = categoriaDAO.buscarCategoriaPorId(1);
+            System.out.println("ID: " + (categoriaPesquisada != null ? categoria1.getNome() : "Não entrada"));
+            
+            // Busca categoria por ID não existente
+            categoriaPesquisada = categoriaDAO.buscarCategoriaPorId(100);
+            System.out.println("ID: " + (categoriaPesquisada != null ? categoria1.getNome() : "Não encontrada"));            
+            
+            // Listar categorias
+            List<Categoria> categorias = categoriaDAO.listarCategorias();
+            System.out.println(categorias);
+            for(Categoria categoria : categorias) {
+                System.out.println("ID: " + categoria.getId() + ", Nome: " + categoria.getNome());
+            }
+            
+            // Atualizar categoria 
+            categoria1.setNome("Ação com Suspense");
+            categoriaDAO.atualizarCategoria(categoria3);
+            System.out.println("Categoria ID: " + categoria3.getId() + " atualizada para: " + categoria3.getNome());
+            
+            // Deletar categoria
+            categoriaDAO.deletarCategoria(3);
+            System.out.println("Categoria com ID: 4 foi deleteda.");
+            
+        } catch (SQLException e) {
             System.err.println("Algo errado aconteceu com a manipulação do DB");            
-        }
+        }    
+        
+       
     }
 }
