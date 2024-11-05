@@ -23,9 +23,9 @@ public class Jdbc {
             CleanDataTableDAO cleanDB = new CleanDataTableDAO();
             
             // Clean table
+            cleanDB.deletarTabelaFilme();
             cleanDB.deletarTabelaCategoria();
             cleanDB.setAutoIncrementeOneTabelaCategoria();
-            cleanDB.deletarTabelaFilme();
             cleanDB.setAutoIncrementOneTabelaFilme();
             
             // Criar algumas categorias
@@ -33,11 +33,13 @@ public class Jdbc {
             Categoria categoria2 = new Categoria(0, "Drama");
             Categoria categoria3 = new Categoria(0, "Ação");
             Categoria categoria4 = new Categoria(0, "Romance");
+            Categoria categoria5 = new Categoria(0, "Terror");
+            
             
             // Criar alguns filmes
             Filme filme1 = new Filme(0, "Prisoners", 2013, "Denis Villeneuve", 1);
             Filme filme2 = new Filme(0, "Ordinary Angels", 2024, "Jon Gunn", 2);
-            Filme filme3 = new Filme(0, "Top Gun: Maverick", 2023, "Joseph Kosinski", 7);
+            Filme filme3 = new Filme(0, "Top Gun: Maverick", 2023, "Joseph Kosinski", 3);
             Filme filme4 = new Filme(0, "The Bodyguard", 1992, "Mick Jackson", 4);
             
             //Inserir as categorias no banco
@@ -75,16 +77,30 @@ public class Jdbc {
                 System.out.println("ID: " + categoria.getId() + ", Nome: " + categoria.getNome());
             }
             
+            // Listar filmes
+            List<Filme> filmes = filmeDAO.listarFilmes();
+            System.out.println(filmes);
+            for(Filme filme : filmes) {
+                System.out.printf("""
+                                   ID: %s
+                                   Título: %s
+                                   Ano: %s
+                                   Diretor: %s
+                                   Categoria associada: %s
+                                   """, filme.getId(), filme.getTitulo(), filme.getAno(), filme.getDiretor(), filme.getCategoria_id());
+            }
+            
             // Atualizar categoria 
-            categoria1.setNome("Ação com Suspense");
+            categoria3.setNome("Ação com Suspense");
             categoriaDAO.atualizarCategoria(categoria3);
             System.out.println("Categoria ID: " + categoria3.getId() + " atualizada para: " + categoria3.getNome());
             
             // Deletar categoria
-            categoriaDAO.deletarCategoria(3);
-            System.out.println("Categoria com ID: 4 foi deleteda.");
+            categoriaDAO.deletarCategoria(5);
+            System.out.println("Categoria com ID: 5 foi deleteda.");
             
         } catch (SQLException e) {
+            e.printStackTrace();
             System.err.println("Algo errado aconteceu com a manipulação do DB");            
         }    
         
