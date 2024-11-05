@@ -25,7 +25,7 @@ public class FilmeDAO {
                 preparedStatement.setInt(4, filme.getCategoria_id());
                 preparedStatement.executeUpdate();
                 
-                // Capturar o ID gerado automaticamente
+                // Capturar o ID gerado automaticamente e demais informações
                 try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                     if(generatedKeys.next()) {
                         filme.setId(generatedKeys.getInt(1)); // Definir o ID no objeto Filme
@@ -39,6 +39,25 @@ public class FilmeDAO {
                 }
                 
         }
+    }
+    
+    // Busca por ID
+    public Filme buscaFilmePorId(int id) throws SQLException {
+        String sql = "SELECT * FROM Filme WHERE id = ?";
+        try (Connection connection = ConexaoDB.getConnection(); PreparedStatement statement = connection.prepareStatement(sql)) {            
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()) {
+                return new Filme(
+                        resultSet.getInt("id"), 
+                        resultSet.getString("titulo"), 
+                        resultSet.getInt("ano"),
+                        resultSet.getString("diretor"),
+                        resultSet.getInt("categoria_id")
+                );
+            }
+        } 
+        return null;
     }
     
 }

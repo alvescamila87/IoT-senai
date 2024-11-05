@@ -54,11 +54,19 @@ public class Jdbc {
             
             // Buscar categoria por ID
             Categoria categoriaPesquisada = categoriaDAO.buscarCategoriaPorId(1);
-            System.out.println("ID: " + (categoriaPesquisada != null ? categoria1.getNome() : "Não entrada"));
+            System.out.println("ID: " + (categoriaPesquisada != null ? categoria1.getNome() : "Categoria não encontrada"));
             
             // Busca categoria por ID não existente
             categoriaPesquisada = categoriaDAO.buscarCategoriaPorId(100);
-            System.out.println("ID: " + (categoriaPesquisada != null ? categoria1.getNome() : "Não encontrada"));            
+            System.out.println("ID: " + (categoriaPesquisada != null ? categoria1.getNome() : "Ctegoria não encontrada"));
+
+            // Busca filme por ID
+            Filme filmePesquisado = filmeDAO.buscaFilmePorId(1);
+            System.out.println("ID: " + (filmePesquisado != null ? filme1.getTitulo() : "Filme não encontrado"));
+            
+            // Buscar filme por ID não existente
+            filmePesquisado = filmeDAO.buscaFilmePorId(100);
+            System.out.println("ID: " + (filmePesquisado != null ? filme1.getTitulo() : "Filme não encontrado"));
             
             // Listar categorias
             List<Categoria> categorias = categoriaDAO.listarCategorias();
