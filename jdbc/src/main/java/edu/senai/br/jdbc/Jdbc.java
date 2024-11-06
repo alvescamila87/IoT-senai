@@ -93,7 +93,26 @@ public class Jdbc {
             // Atualizar categoria 
             categoria3.setNome("Ação com Suspense");
             categoriaDAO.atualizarCategoria(categoria3);
-            System.out.println("Categoria ID: " + categoria3.getId() + " atualizada para: " + categoria3.getNome());
+            System.out.println("ATUALIZAÇÃO DE CATEGORIA: ");
+            for(Categoria categoria : categorias) {
+                System.out.println("ID: " + categoria.getId() + ", Nome: " + categoria.getNome());
+            }
+            
+            // Atualizar filme
+            filme1.setTitulo("Home alone");
+            filme1.setAno(1990);
+            filme1.setDiretor("Chris Columbus");
+            filme1.setCategoria_id(4);
+            System.out.println("ATUALIZAÇÃO DE FILME: ");
+            for(Filme filme : filmes) {
+                System.out.printf("""
+                                   ID: %s
+                                   Título: %s
+                                   Ano: %s
+                                   Diretor: %s
+                                   Categoria associada: %s
+                                   """, filme.getId(), filme.getTitulo(), filme.getAno(), filme.getDiretor(), filme.getCategoria_id());
+            }
             
             // Deletar categoria
             categoriaDAO.deletarCategoria(5);
