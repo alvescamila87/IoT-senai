@@ -92,5 +92,15 @@ public class FilmeDAO {
             preparedStatement.executeUpdate();           
         }
     }
+    
+    // Delete filmes
+    public void deletarFilme(int id) throws SQLException {
+        String sql = "DELETE FROM Filme WHERE id = ?;";
+        try (Connection connection = ConexaoDB.getConnection(); 
+            PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        }
+    }
 
 }

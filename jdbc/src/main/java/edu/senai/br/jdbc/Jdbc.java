@@ -103,6 +103,7 @@ public class Jdbc {
             filme1.setAno(1990);
             filme1.setDiretor("Chris Columbus");
             filme1.setCategoria_id(4);
+            filmeDAO.atualizarFilme(filme1);
             System.out.println("ATUALIZAÇÃO DE FILME: ");
             for(Filme filme : filmes) {
                 System.out.printf("""
@@ -116,7 +117,11 @@ public class Jdbc {
             
             // Deletar categoria
             categoriaDAO.deletarCategoria(5);
-            System.out.println("Categoria com ID: 5 foi deleteda.");
+            System.out.println("Categoria com ID: 5 foi deletada.");
+            
+            // Deletar filme
+            filmeDAO.deletarFilme(3);
+            System.out.println("Filme com ID: 3 foi deletado.");
             
         } catch (SQLException e) {
             e.printStackTrace();
