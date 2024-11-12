@@ -98,8 +98,40 @@ public class ProjetoSaIoT {
         button = new JButton("Iniciar coleta");
         
         // Adiciona o ActionListener ao botão
-        //button.addActionListener((ActionEvent e) -> {;
-        //});
+    button.addActionListener((ActionEvent e) -> {
+        // Cria a conexão com o banco de dados
+        ConexaoDB conexaoDB = new ConexaoDB();
+        Connection conn = conexaoDB.getConnection();
+        
+        // Verifica se a conexão foi bem-sucedida
+        if (conn != null) {
+            // Aqui você pode executar operações no banco, como inserir dados, fazer consultas, etc.
+            System.out.println("Conexão com o banco estabelecida. Você pode realizar operações no banco.");
+
+            // Exemplo de como você pode salvar os dados recebidos de MQTT no banco de dados:
+            String distancia = distanciaField.getText();
+            String temperatura = temperaturaField.getText();
+            String turbidez = turbidezField.getText();
+
+            // Exemplo simples de SQL (não segura, apenas para fins ilustrativos)
+            String sql = "INSERT INTO dados_sensor (distancia, temperatura, turbidez) VALUES (?, ?, ?)";
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, distancia);
+                stmt.setString(2, temperatura);
+                stmt.setString(3, turbidez);
+                stmt.executeUpdate();
+                System.out.println("Dados inseridos no banco.");
+            } catch (SQLException ex) {
+                System.out.println("Erro ao inserir dados: " + ex.getMessage());
+            }
+
+            // Fechar a conexão
+            conexaoDB.closeConnection(conn);
+        } else {
+            System.out.println("Não foi possível conectar ao banco de dados.");
+        }
+    });
         
         // Configuração do botão
         gbc.gridx = 1;
@@ -137,6 +169,8 @@ public class ProjetoSaIoT {
                             // Atualize o campo `distanciaField` com o valor encontrado
                             SwingUtilities.invokeLater(() -> {
                                 distanciaField.setText(valor);
+                                temperaturaField.setText(valor);
+                                turbidezField.setText(valor);
                             });
                         } else {
                             System.out.println("Objeto JSON sem a chave 'value': " + jsonObject);

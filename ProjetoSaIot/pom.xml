@@ -35,6 +35,12 @@
             <version>20210307</version>
         </dependency>
  
+        <dependency>
+           <groupId>mysql</groupId>
+           <artifactId>mysql-connector-java</artifactId>
+           <version>8.0.29</version> <!-- Use a versão que você precisa -->
+       </dependency>
+
         <!--Biblioteca para gerar gráficos -->
         <dependency>
             <groupId>org.jfree</groupId>
