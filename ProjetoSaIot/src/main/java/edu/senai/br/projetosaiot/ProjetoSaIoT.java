@@ -22,6 +22,9 @@ public class ProjetoSaIoT {
     private JFrame frame;
     private MqttClient mqttClient;
     private JTextField distanciaField;
+    private JTextField temperaturaField;
+    private JTextField turbidezField;
+    private JButton button;    
 
     public ProjetoSaIoT() {
         createGUI();
@@ -35,23 +38,75 @@ public class ProjetoSaIoT {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
+        // DISTÂNCIA
         JLabel distanciaLabel = new JLabel("Distância (cm):");
         distanciaField = new JTextField(10);
         distanciaField.setEditable(false);
 
-        // Adiciona o label
+        // Adiciona o label distância
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.weightx = 1.0; 
         frame.add(distanciaLabel, gbc);
 
-        // Adiciona o text field
+        // Adiciona o text field distância
         gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
         frame.add(distanciaField, gbc);
+        
+        //TEMPERATURA
+        JLabel temperaturaLabel = new JLabel("Temperatura (ºC):");
+        temperaturaField = new JTextField(10);
+        temperaturaField.setEditable(false);
+        
+        // Adiciona o label temperatura
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weightx = 1;
+        frame.add(temperaturaLabel, gbc);
 
-        frame.setSize(300, 100);
+        // Adiciona o text field temperatura
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.weightx = 1;
+        frame.add(temperaturaField, gbc);        
+        
+        //TURBIDEZ
+        JLabel turbidezLabel = new JLabel("Turbidez (uT):");
+        turbidezField = new JTextField(10);
+        turbidezField.setEditable(false);
+        
+        // Adiciona o label turbidez
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.weightx = 1;
+        frame.add(turbidezLabel, gbc);
+
+        // Adiciona o text field turbidez
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.weightx = 1;
+        frame.add(turbidezField, gbc);
+
+        frame.setSize(600, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        // Botão Iniciar coleta
+        button = new JButton("Iniciar coleta");
+        
+        // Adiciona o ActionListener ao botão
+        //button.addActionListener((ActionEvent e) -> {;
+        //});
+        
+        // Configuração do botão
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.gridwidth = 0;
+        gbc.weightx = 1;
+        frame.add(button, gbc);
     }
 
     private void setupMQTTClient() {
@@ -95,9 +150,9 @@ public class ProjetoSaIoT {
         } catch (MqttException me) {
             System.out.println("reason " + me.getReasonCode());
             System.out.println("msg " + me.getMessage());
-            System.out.println("loc " + me.getLocalizedMessage());
+            System.out.println("localizated " + me.getLocalizedMessage());
             System.out.println("cause " + me.getCause());
-            System.out.println("excep " + me);
+            System.out.println("exception " + me);
             me.printStackTrace();
         }
     }
