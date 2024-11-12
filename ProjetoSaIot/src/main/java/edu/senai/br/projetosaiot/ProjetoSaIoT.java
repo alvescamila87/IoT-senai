@@ -2,14 +2,16 @@ package edu.senai.br.projetosaiot;
 
 /**
  *
- * @author Giovanni L. Rozza
- * https://github.com/jfree/jfreechart 
- * https://eclipse.dev/paho/
+ * @author Camila
  */
 import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONObject;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -24,6 +26,7 @@ public class ProjetoSaIoT {
     private JTextField distanciaField;
     private JTextField temperaturaField;
     private JTextField turbidezField;
+    private JTextField dataColetaField;
     private JButton button;    
 
     public ProjetoSaIoT() {
@@ -88,54 +91,66 @@ public class ProjetoSaIoT {
         gbc.gridy = 4;
         gbc.weightx = 1;
         frame.add(turbidezField, gbc);
+        
+        //TIMESTAMP: DATA COLETA
+        JLabel dataColetaLabel = new JLabel("Coletado em:");
+        dataColetaField = new JTextField(10);
+        dataColetaField.setEditable(false);
+        
+        // Adiciona o label timestamp
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.weightx = 1;
+        frame.add(dataColetaLabel, gbc);
+
+        // Adiciona o text field timestamp
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        gbc.weightx = 1;
+        frame.add(dataColetaField, gbc);
 
         frame.setSize(600, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         
-        // Botão Iniciar coleta
-        button = new JButton("Iniciar coleta");
+        // Botão para iniciar coleta
+        button = new JButton("Coletar");
         
-        // Adiciona o ActionListener ao botão
-    button.addActionListener((ActionEvent e) -> {
-        // Cria a conexão com o banco de dados
-        ConexaoDB conexaoDB = new ConexaoDB();
-        Connection conn = conexaoDB.getConnection();
-        
-        // Verifica se a conexão foi bem-sucedida
-        if (conn != null) {
-            // Aqui você pode executar operações no banco, como inserir dados, fazer consultas, etc.
-            System.out.println("Conexão com o banco estabelecida. Você pode realizar operações no banco.");
+        // Adiciona o ActionListener ao botão;
+        button.addActionListener((ActionEvent e) -> {
+            try (Connection connection = ConexaoDB.getConnection()) {
+                if(connection != null) {
+                    // Exemplo de como você pode salvar os dados recebidos de MQTT no banco de dados:
+                    String distancia = distanciaField.getText();
+                    String temperatura = temperaturaField.getText();
+                    String turbidez = turbidezField.getText();
+                    String dataColeta = dataColetaField.getText();
 
-            // Exemplo de como você pode salvar os dados recebidos de MQTT no banco de dados:
-            String distancia = distanciaField.getText();
-            String temperatura = temperaturaField.getText();
-            String turbidez = turbidezField.getText();
+                    // Exemplo simples de SQL (não segura, apenas para fins ilustrativos)
+                    String sql = "INSERT INTO dados_sensor (distancia, temperatura, turbidez, dataColeta) VALUES (?, ?, ?, ?)";
 
-            // Exemplo simples de SQL (não segura, apenas para fins ilustrativos)
-            String sql = "INSERT INTO dados_sensor (distancia, temperatura, turbidez) VALUES (?, ?, ?)";
-
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, distancia);
-                stmt.setString(2, temperatura);
-                stmt.setString(3, turbidez);
-                stmt.executeUpdate();
-                System.out.println("Dados inseridos no banco.");
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                        preparedStatement.setString(1, distancia);
+                        preparedStatement.setString(2, temperatura);
+                        preparedStatement.setString(3, turbidez);
+                        preparedStatement.setString(4, dataColeta);
+                        preparedStatement.executeUpdate();
+                        System.out.println("Dados inseridos no banco.");
+                    } catch (SQLException ex) {
+                        System.out.println("Erro ao conectar ao banco: " + ex.getMessage());
+                    }                        
+                } else {
+                    System.out.println("Não foi possível conectar ao banco de dados."); 
+                }
             } catch (SQLException ex) {
-                System.out.println("Erro ao inserir dados: " + ex.getMessage());
+                System.out.println("Erro ao conectar ao banco: " + ex.getMessage());
             }
-
-            // Fechar a conexão
-            conexaoDB.closeConnection(conn);
-        } else {
-            System.out.println("Não foi possível conectar ao banco de dados.");
-        }
-    });
+        });
         
         // Configuração do botão
         gbc.gridx = 1;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridwidth = 0;
         gbc.weightx = 1;
         frame.add(button, gbc);
@@ -171,6 +186,7 @@ public class ProjetoSaIoT {
                                 distanciaField.setText(valor);
                                 temperaturaField.setText(valor);
                                 turbidezField.setText(valor);
+                                dataColetaField.setText(valor);
                             });
                         } else {
                             System.out.println("Objeto JSON sem a chave 'value': " + jsonObject);
