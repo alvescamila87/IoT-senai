@@ -128,7 +128,7 @@ public class ProjetoSaIoT {
                     String dataColeta = dataColetaField.getText();
 
                     // Exemplo simples de SQL (não segura, apenas para fins ilustrativos)
-                    String sql = "INSERT INTO dados_sensor (distancia, temperatura, turbidez, dataColeta) VALUES (?, ?, ?, ?)";
+                    String sql = "INSERT INTO coleta (distancia, temperatura, turbidez, dataColeta) VALUES (?, ?, ?, ?)";
 
                     try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                         preparedStatement.setString(1, distancia);
