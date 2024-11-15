@@ -180,13 +180,14 @@ public class ProjetoSaIoT {
                         // Verifique se o objeto contém a chave "value"
                         if (jsonObject.has("value")) {
                             String valor = jsonObject.getString("value");
+                            String timestamp = jsonObject.getString("timestamp");
 
                             // Atualize o campo `distanciaField` com o valor encontrado
                             SwingUtilities.invokeLater(() -> {
                                 distanciaField.setText(valor);
                                 temperaturaField.setText(valor);
                                 turbidezField.setText(valor);
-                                dataColetaField.setText(valor);
+                                dataColetaField.setText(timestamp);
                             });
                         } else {
                             System.out.println("Objeto JSON sem a chave 'value': " + jsonObject);
