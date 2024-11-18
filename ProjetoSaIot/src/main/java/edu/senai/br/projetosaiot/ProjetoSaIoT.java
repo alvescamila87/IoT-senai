@@ -17,8 +17,8 @@ import org.json.JSONException;
 
 public class ProjetoSaIoT {
 
-    private static final String BROKER_URL = "tcp://localhost:1883";
-    //private static final String BROKER_URL = "tcp://test.mosquitto.org:1883"; // Broker Mosquitto público    
+    //private static final String BROKER_URL = "tcp://localhost:1883";
+    private static final String BROKER_URL = "tcp://test.mosquitto.org:1883"; // Broker Mosquitto público    
     private static final String CLIENT_ID = "JavaGUIClient";
     private static final String TOPIC = "le_dados_qualidade_agua";
     private JFrame frame;
@@ -43,7 +43,7 @@ public class ProjetoSaIoT {
 
         // DISTÂNCIA
         JLabel distanciaLabel = new JLabel("Distância (cm):");
-        distanciaField = new JTextField(10);
+        distanciaField = new JTextField(15);
         distanciaField.setEditable(false);
 
         // Adiciona o label distância
@@ -60,7 +60,7 @@ public class ProjetoSaIoT {
         
         //TEMPERATURA
         JLabel temperaturaLabel = new JLabel("Temperatura (ºC):");
-        temperaturaField = new JTextField(10);
+        temperaturaField = new JTextField(15);
         temperaturaField.setEditable(false);
         
         // Adiciona o label temperatura
@@ -77,7 +77,7 @@ public class ProjetoSaIoT {
         
         //TURBIDEZ
         JLabel turbidezLabel = new JLabel("Turbidez (uT):");
-        turbidezField = new JTextField(10);
+        turbidezField = new JTextField(15);
         turbidezField.setEditable(false);
         
         // Adiciona o label turbidez
@@ -94,7 +94,7 @@ public class ProjetoSaIoT {
         
         //TIMESTAMP: DATA COLETA
         JLabel dataColetaLabel = new JLabel("Coletado em:");
-        dataColetaField = new JTextField(10);
+        dataColetaField = new JTextField(15);
         dataColetaField.setEditable(false);
         
         // Adiciona o label timestamp
@@ -109,13 +109,13 @@ public class ProjetoSaIoT {
         gbc.weightx = 1;
         frame.add(dataColetaField, gbc);
 
-        frame.setSize(600, 300);
+        frame.setSize(500, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         
         // Botão para iniciar coleta
-        button = new JButton("Coletar");
+        button = new JButton("Coletar dados");
         
         // Adiciona o ActionListener ao botão;
         button.addActionListener((ActionEvent e) -> {
@@ -161,6 +161,8 @@ public class ProjetoSaIoT {
             mqttClient = new MqttClient(BROKER_URL, CLIENT_ID);
             MqttConnectOptions connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(true);
+            connOpts.setAutomaticReconnect(true); // re-conexão automática
+            connOpts.setKeepAliveInterval(30); // em segundos, ajuste conforme o necessário
 
             System.out.println("Connecting to broker: " + BROKER_URL);
             mqttClient.connect(connOpts);
@@ -178,16 +180,28 @@ public class ProjetoSaIoT {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                         // Verifique se o objeto contém a chave "value"
-                        if (jsonObject.has("value")) {
-                            String valor = jsonObject.getString("value");
+                        if (jsonObject.has("variable") && jsonObject.getString("variable").equals("valor_distancia")) {
+                            String valorDistancia = jsonObject.getString("value");
                             String timestamp = jsonObject.getString("timestamp");
 
                             // Atualize o campo `distanciaField` com o valor encontrado
                             SwingUtilities.invokeLater(() -> {
-                                distanciaField.setText(valor);
-                                temperaturaField.setText(valor);
-                                turbidezField.setText(valor);
+                                distanciaField.setText(valorDistancia);
                                 dataColetaField.setText(timestamp);
+                            });
+                        } else if (jsonObject.has("variable") && jsonObject.getString("variable").equals("valor_temperatura")) {
+                            String valorTemperatura = jsonObject.getString("value");
+
+                            // Atualize o campo `distanciaField` com o valor encontrado
+                            SwingUtilities.invokeLater(() -> {
+                                temperaturaField.setText(valorTemperatura);
+                            });
+                        } else if (jsonObject.has("variable") && jsonObject.getString("variable").equals("valor_turbidez")) {
+                            String valorTurbidez = jsonObject.getString("value");
+
+                            // Atualize o campo `distanciaField` com o valor encontrado
+                            SwingUtilities.invokeLater(() -> {
+                                turbidezField.setText(valorTurbidez);
                             });
                         } else {
                             System.out.println("Objeto JSON sem a chave 'value': " + jsonObject);
