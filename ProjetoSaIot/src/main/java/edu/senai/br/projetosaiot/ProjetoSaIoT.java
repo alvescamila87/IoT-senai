@@ -17,8 +17,9 @@ import org.json.JSONException;
 
 public class ProjetoSaIoT {
 
-    //private static final String BROKER_URL = "tcp://localhost:1883";
-    private static final String BROKER_URL = "tcp://test.mosquitto.org:1883"; // Broker Mosquitto público    
+    private static final String BROKER_URL = "tcp://localhost:1883";
+    //private static final String BROKER_URL = "tcp://test.mosquitto.org:1883"; // Broker Mosquitto público  
+    //private static final String BROKER_URL = "tcp://broker.hivemq.com"; // Broker 
     private static final String CLIENT_ID = "JavaGUIClient";
     private static final String TOPIC = "le_dados_qualidade_agua";
     private JFrame frame;
@@ -27,11 +28,63 @@ public class ProjetoSaIoT {
     private JTextField temperaturaField;
     private JTextField turbidezField;
     private JTextField dataColetaField;
-    private JButton button;    
+    private JButton button;
+    private boolean isActivate;
 
     public ProjetoSaIoT() {
         createGUI();
         setupMQTTClient();
+    }
+
+    private void checkButton() {
+        if (!isActivate) {
+            System.out.println("Não salva no banco de dados");
+            return;
+        }
+
+        try (Connection connection = ConexaoDB.getConnection()) {
+            if (connection != null) {
+                // Exemplo de como você pode salvar os dados recebidos de MQTT no banco de dados:
+                String dataColeta = dataColetaField.getText().trim();
+                String distancia = distanciaField.getText().trim();
+                String temperatura = temperaturaField.getText().trim();
+                String turbidez = turbidezField.getText().trim();
+
+                // Tratar os campos vazios e substituí-los por null
+                if (distancia.isEmpty()) {
+                    return;
+                    //System.out.println("VAZIO DISTÂNCIA"); 
+                }
+                if (temperatura.isEmpty()) {
+                    //System.out.println("VAZIO TEMP"); 
+                }
+                if (turbidez.isEmpty()) {
+                    //System.out.println("VAZIO TURBI"); 
+                }
+                if (dataColeta.isEmpty()) {
+                    //System.out.println("VAZIO DATA COLETA"); 
+                }
+                // Exemplo simples de SQL (não segura, apenas para fins ilustrativos)
+                String sql = "INSERT INTO coleta (dataColeta, distancia, temperatura, turbidez) VALUES (?, ?, ?, ?)";
+
+                try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                    preparedStatement.setString(1, dataColeta);
+                    preparedStatement.setString(2, distancia);
+                    preparedStatement.setString(3, temperatura);
+                    preparedStatement.setString(4, turbidez);
+                    preparedStatement.executeUpdate();
+
+                    System.out.println("Dados inseridos no banco.");
+                } catch (SQLException ex) {
+                    System.out.println("Erro ao conectar ao banco: " + ex.getMessage());
+                }
+            } else {
+                System.out.println("Não foi possível conectar ao banco de dados.");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao conectar ao banco: " + ex.getMessage());
+        }
+
     }
 
     private void createGUI() {
@@ -49,7 +102,7 @@ public class ProjetoSaIoT {
         // Adiciona o label distância
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 1.0; 
+        gbc.weightx = 1.0;
         frame.add(distanciaLabel, gbc);
 
         // Adiciona o text field distância
@@ -57,12 +110,12 @@ public class ProjetoSaIoT {
         gbc.gridy = 0;
         gbc.weightx = 1;
         frame.add(distanciaField, gbc);
-        
+
         //TEMPERATURA
         JLabel temperaturaLabel = new JLabel("Temperatura (ºC):");
         temperaturaField = new JTextField(15);
         temperaturaField.setEditable(false);
-        
+
         // Adiciona o label temperatura
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -73,13 +126,13 @@ public class ProjetoSaIoT {
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.weightx = 1;
-        frame.add(temperaturaField, gbc);        
-        
+        frame.add(temperaturaField, gbc);
+
         //TURBIDEZ
         JLabel turbidezLabel = new JLabel("Turbidez (uT):");
         turbidezField = new JTextField(15);
         turbidezField.setEditable(false);
-        
+
         // Adiciona o label turbidez
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -91,12 +144,12 @@ public class ProjetoSaIoT {
         gbc.gridy = 4;
         gbc.weightx = 1;
         frame.add(turbidezField, gbc);
-        
+
         //TIMESTAMP: DATA COLETA
         JLabel dataColetaLabel = new JLabel("Coletado em:");
         dataColetaField = new JTextField(15);
         dataColetaField.setEditable(false);
-        
+
         // Adiciona o label timestamp
         gbc.gridx = 0;
         gbc.gridy = 5;
@@ -113,41 +166,15 @@ public class ProjetoSaIoT {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        
+
         // Botão para iniciar coleta
         button = new JButton("Coletar dados");
-        
+
         // Adiciona o ActionListener ao botão;
         button.addActionListener((ActionEvent e) -> {
-            try (Connection connection = ConexaoDB.getConnection()) {
-                if(connection != null) {
-                    // Exemplo de como você pode salvar os dados recebidos de MQTT no banco de dados:
-                    String distancia = distanciaField.getText();
-                    String temperatura = temperaturaField.getText();
-                    String turbidez = turbidezField.getText();
-                    String dataColeta = dataColetaField.getText();
-
-                    // Exemplo simples de SQL (não segura, apenas para fins ilustrativos)
-                    String sql = "INSERT INTO coleta (distancia, temperatura, turbidez, dataColeta) VALUES (?, ?, ?, ?)";
-
-                    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                        preparedStatement.setString(1, distancia);
-                        preparedStatement.setString(2, temperatura);
-                        preparedStatement.setString(3, turbidez);
-                        preparedStatement.setString(4, dataColeta);
-                        preparedStatement.executeUpdate();
-                        System.out.println("Dados inseridos no banco.");
-                    } catch (SQLException ex) {
-                        System.out.println("Erro ao conectar ao banco: " + ex.getMessage());
-                    }                        
-                } else {
-                    System.out.println("Não foi possível conectar ao banco de dados."); 
-                }
-            } catch (SQLException ex) {
-                System.out.println("Erro ao conectar ao banco: " + ex.getMessage());
-            }
+           isActivate = true;
         });
-        
+
         // Configuração do botão
         gbc.gridx = 1;
         gbc.gridy = 6;
@@ -202,6 +229,7 @@ public class ProjetoSaIoT {
                             // Atualize o campo `distanciaField` com o valor encontrado
                             SwingUtilities.invokeLater(() -> {
                                 turbidezField.setText(valorTurbidez);
+                                checkButton(); // checa se o botão de coleta foi pressionado. Se foi, salva no DB;
                             });
                         } else {
                             System.out.println("Objeto JSON sem a chave 'value': " + jsonObject);
