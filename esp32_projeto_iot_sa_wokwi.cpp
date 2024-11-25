@@ -29,10 +29,9 @@
 // 1. Declarão de todos os sensores
 
 // O fio de dados é conectado no GPIO do ESP32
-#define ONE_WIRE_BUS 4 // usando o GPIO 4
+#define ONE_WIRE_BUS 18 // usando o GPIO 18
 // Prepara uma instância oneWire para comunicar com qualquer outro dispositivo oneWire
 OneWire oneWire(ONE_WIRE_BUS);
-#define PORTA_TEMPERATURA 5 // sensor de temperatura GPIO 5
 #define PORTA_DISTANCIA_TRIG 4 // sensor de distância HCSR04 GPIO 4
 #define PORTA_DISTANCIA_ECHO 2 // sensor de distância HCSR04 GPIO 2
 #define PORTA_TURBIDEZ_DAC 35 // sensor de turbidez GPIO 35
