@@ -227,17 +227,17 @@ void lerEPublicarDados(int iSensor) {
       // sensors.requestTemperatures();
       // temperature = sensors.getTempCByIndex(0);
 
-      dados[1]["variable"] = "valor_temperatura";
+      dados[0]["variable"] = "valor_temperatura";
       /*
       Essa linha define o valor da chave "unit" no primeiro elemento do documento JSON (índice 1) 
       com  a string "oC".
        */
-      dados[1]["unit"] = "oC";
+      dados[0]["unit"] = "oC";
       /*
       Essa linha define o valor da chave "value" no primeiro elemento do documento JSON com  
       uma string criada a partir do valor da variável temperature.
       */
-      dados[1]["value"] = String(temperature);
+      dados[0]["value"] = String(temperature);
       /*
       Essa linha define o valor da chave "timestamp" no primeiro elemento do documento JSON 
       com a string armazenada em timeStringBuff.
@@ -255,17 +255,17 @@ void lerEPublicarDados(int iSensor) {
 
       // int NTU = 0;
 
-      dados[2]["variable"] = "valor_turbidez";
+      dados[0]["variable"] = "valor_turbidez";
       /*
       Essa linha define o valor da chave "unit" no primeiro elemento do documento JSON (índice 2) 
       com  a string "NTU".
        */
-      dados[2]["unit"] = "NTU";
+      dados[0]["unit"] = "NTU";
       /*
       Essa linha define o valor da chave "value" no primeiro elemento do documento JSON com  
       uma string criada a partir do valor da variável turbidez.
       */
-      dados[2]["value"] = String(NTU);
+      dados[0]["value"] = String(NTU);
       /*
       Essa linha define o valor da chave "timestamp" no primeiro elemento do documento JSON 
       com a string armazenada em timeStringBuff.
@@ -338,7 +338,7 @@ void loop() {
 
     // rotaciona qual sensor irá ter seus valores publicados
     iSensor++;
-    if(iSensor >2)    {
+    if(iSensor > 2)    {
       iSensor=0; // rotativo, volta para o 1o sensor.
     }
 	
@@ -352,16 +352,18 @@ void loop() {
 	  delayMicroseconds(10);
 	  digitalWrite(PORTA_DISTANCIA_TRIG, LOW);
 	  distancia = (pulseIn(PORTA_DISTANCIA_ECHO, HIGH)*0.0343); // distancia em cm
+    Serial.println("Valor distância atual: ");
+    Serial.print(distancia);
 
-	  distancia = random(4, 401);  // VALOR DUMMY PARA TESTES, ESTA LINHA DEVE SER REMOVIDA QUANDO USAR O ESP32
+	  //distancia = random(4, 401);  // VALOR DUMMY PARA TESTES, ESTA LINHA DEVE SER REMOVIDA QUANDO USAR O ESP32
 	  
 	  // 2. SENSOR TEMPERATURA
-   //float temperature = leTemperatura(); - WOKWI
+    //float temperature = leTemperatura(); - WOKWI
     sensors.requestTemperatures();
-    float temperature = sensors.getTempCByIndex(0);
+    temperature = sensors.getTempCByIndex(0);
 
     // Exibe a temperatura em Celsius
-    Serial.print("Temperatura atual: ");
+    Serial.println("Temperatura atual: ");
     Serial.print(temperature);
     Serial.println(" ºC");
 
@@ -379,13 +381,13 @@ void loop() {
 
     // 3. SENSOR TURBIDEZ  
     analogValue = somaAnalogValue/QUANTIDADE_AMOSTRAS; // valor médio
-    Serial.print("Valor médio obtido: ");
+    Serial.print("Valor médio obtido turbudez: ");
     Serial.println(analogValue);
     // Add a delay to slow down the output in the Serial Monitor
 
-    // valor NTU
-    int NTU = -0.012144*analogValue*analogValue + 0.90066*analogValue + 2995.8;
-    Serial.print("Valor em NTU: ");
+    // Valor NTU
+    NTU = -0.012144*analogValue*analogValue + 0.90066*analogValue + 2995.8;
+    Serial.print("Valor em NTU atual: ");
     Serial.println(NTU);
     delay(1500); 
 	
