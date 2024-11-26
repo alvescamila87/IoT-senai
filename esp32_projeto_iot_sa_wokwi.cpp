@@ -352,8 +352,8 @@ void loop() {
 	  delayMicroseconds(10);
 	  digitalWrite(PORTA_DISTANCIA_TRIG, LOW);
 	  distancia = (pulseIn(PORTA_DISTANCIA_ECHO, HIGH)*0.0343); // distancia em cm
-    Serial.println("Valor distância atual: ");
-    Serial.print(distancia);
+    Serial.print("Valor distância atual: ");
+    Serial.println(distancia);
 
 	  //distancia = random(4, 401);  // VALOR DUMMY PARA TESTES, ESTA LINHA DEVE SER REMOVIDA QUANDO USAR O ESP32
 	  
@@ -363,7 +363,7 @@ void loop() {
     temperature = sensors.getTempCByIndex(0);
 
     // Exibe a temperatura em Celsius
-    Serial.println("Temperatura atual: ");
+    Serial.print("Temperatura atual: ");
     Serial.print(temperature);
     Serial.println(" ºC");
 
@@ -387,7 +387,7 @@ void loop() {
 
     // Valor NTU
     NTU = -0.012144*analogValue*analogValue + 0.90066*analogValue + 2995.8;
-    Serial.print("Valor em NTU atual: ");
+    Serial.print("Turbidez atual (NTU): ");
     Serial.println(NTU);
     delay(1500); 
 	
@@ -401,7 +401,7 @@ void loop() {
    *  
    */
    
-   // 2. SENSOR TEMPERATURA - OPCIONAL
+// 2. SENSOR TEMPERATURA - OPCIONAL
 //float leTemperatura()
 //{
   //float temperatura = 16.00;
