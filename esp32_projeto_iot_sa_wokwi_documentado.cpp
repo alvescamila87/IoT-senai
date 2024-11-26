@@ -17,6 +17,13 @@
 * 1. CONFIGURAÇÃO INICIAL 
 * Portas dos ESP32 utilizadas pelos sensores, bem como as variáveis necessárias para ler os valores.
 */ 
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <ArduinoJson.h>
+#include <time.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
 #define ONE_WIRE_BUS 18 // usando o GPIO 18
 #define PORTA_DISTANCIA_TRIG 4 // sensor de distância HCSR04 GPIO 4
 #define PORTA_DISTANCIA_ECHO 2 // sensor de distância HCSR04 GPIO 2
