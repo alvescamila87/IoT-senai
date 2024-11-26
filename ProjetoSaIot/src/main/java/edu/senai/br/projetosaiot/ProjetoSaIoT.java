@@ -1,9 +1,5 @@
 package edu.senai.br.projetosaiot;
 
-/**
- *
- * @author Camila
- */
 import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONObject;
 import javax.swing.*;
@@ -15,6 +11,21 @@ import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+/**
+ * PROJETO SENAI/SC S.A: IoT Sensores
+ * 
+ * Objetivo:
+ * O objetivo é fornecer uma solução para monitoramento remoto da qualidade da água, 
+ * coletando dados de diferentes sensores e transmitindo-os em tempo real.
+ * 
+ * Classe principal do aplicativo ProjetoSaIoT. 
+ * Este aplicativo se conecta a um broker MQTT, inscreve-se em um tópico para receber dados de sensores 
+ * (como distância, temperatura e turbidez), e fornece uma interface gráfica para exibir os dados dos sensores. 
+ * Também permite salvar os dados recebidos em um banco de dados quando um botão é pressionado.
+ * 
+ * @autores Camila Alves, Davi Galvão, João C. Emídio
+ * Data de criação: 26/11/2024
+ */
 public class ProjetoSaIoT {
 
     private static final String BROKER_URL = "tcp://localhost:1883";
@@ -31,12 +42,18 @@ public class ProjetoSaIoT {
     private JButton button;
     private boolean isActivate;
 
+    /**
+     * Construtor que inicializa a interface gráfica (GUI) e configura o cliente MQTT.
+     */
     public ProjetoSaIoT() {
         createGUI();
         setupMQTTClient();
     }
 
-    private void checkButton() {
+     /**
+     * Verifica se o botão foi ativado e salva os dados no banco de dados se ativado.
+     */
+    private void checkButton() {        
         if (!isActivate) {
             System.out.println("Não salva no banco de dados");
             return;
@@ -44,27 +61,19 @@ public class ProjetoSaIoT {
 
         try (Connection connection = ConexaoDB.getConnection()) {
             if (connection != null) {
-                // Exemplo de como você pode salvar os dados recebidos de MQTT no banco de dados:
+                // Recupera os dados dos campos de entrada
                 String dataColeta = dataColetaField.getText().trim();
                 String distancia = distanciaField.getText().trim();
                 String temperatura = temperaturaField.getText().trim();
                 String turbidez = turbidezField.getText().trim();
 
-                // Tratar os campos vazios e substituí-los por null
-                if (distancia.isEmpty()) {
-                    return;
-                    //System.out.println("VAZIO DISTÂNCIA"); 
-                }
-                if (temperatura.isEmpty()) {
-                    //System.out.println("VAZIO TEMP"); 
-                }
-                if (turbidez.isEmpty()) {
-                    //System.out.println("VAZIO TURBI"); 
-                }
-                if (dataColeta.isEmpty()) {
-                    //System.out.println("VAZIO DATA COLETA"); 
-                }
-                // Exemplo simples de SQL (não segura, apenas para fins ilustrativos)
+                // Se algum campo estiver vazio, não salva
+                if (distancia.isEmpty()) {}
+                if (temperatura.isEmpty()) {}
+                if (turbidez.isEmpty()) {}
+                if (dataColeta.isEmpty()) {}
+                
+                // Consulta SQL para inserir dados
                 String sql = "INSERT INTO coleta (dataColeta, distancia, temperatura, turbidez) VALUES (?, ?, ?, ?)";
 
                 try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -87,6 +96,10 @@ public class ProjetoSaIoT {
 
     }
 
+    /**
+     * Cria e exibe a interface gráfica (GUI) do aplicativo.
+     * A GUI contém campos de texto para exibir os dados dos sensores e um botão para iniciar a coleta de dados.
+     */
     private void createGUI() {
         frame = new JFrame("MQTT Sensor Data");
         frame.setLayout(new GridBagLayout());
@@ -183,6 +196,10 @@ public class ProjetoSaIoT {
         frame.add(button, gbc);
     }
 
+    /**
+     * Configura o cliente MQTT para se conectar ao broker e se inscrever no tópico.
+     * Quando os dados são recebidos, eles são processados e os respectivos campos são atualizados.
+     */
     private void setupMQTTClient() {
         try {
             mqttClient = new MqttClient(BROKER_URL, CLIENT_ID);
@@ -200,9 +217,10 @@ public class ProjetoSaIoT {
                     String msg = new String(message.getPayload());
                     System.out.println("Payload recebido: " + msg);
 
-                    JSONArray jsonArray = new JSONArray(msg);  // Trate o payload como um JSONArray
+                    // Trate o payload como um JSONArray
+                    JSONArray jsonArray = new JSONArray(msg);  
 
-                    // Itere pelos objetos dentro do array
+                    // Processa cada objeto JSON no array
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -250,6 +268,10 @@ public class ProjetoSaIoT {
         }
     }
 
+    /**
+     * Método principal que inicializa o aplicativo.
+     * @param args Argumentos da linha de comando (não usados neste caso).
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ProjetoSaIoT::new);
     }
