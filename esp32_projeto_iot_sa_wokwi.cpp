@@ -351,7 +351,7 @@ void loop() {
 	  digitalWrite(PORTA_DISTANCIA_TRIG, HIGH);
 	  delayMicroseconds(10);
 	  digitalWrite(PORTA_DISTANCIA_TRIG, LOW);
-	  distancia = (pulseIn(PORTA_DISTANCIA_ECHO, HIGH)*0.0343); // distancia em cm
+	  distancia = (pulseIn(PORTA_DISTANCIA_ECHO, HIGH)*0.0343) / 2; // distancia em cm
     Serial.print("Valor distância atual: ");
     Serial.println(distancia);
 
