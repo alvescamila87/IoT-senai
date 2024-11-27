@@ -12,8 +12,8 @@ Este aplicativo se conecta a um broker MQTT, inscreve-se em um tópico para rece
 Também permite salvar os dados recebidos em um banco de dados quando um botão é pressionado.
 
 ## Links do projeto
-[Link 1 - Netbeans](https://github.com/alvescamila87/IoT-senai/tree/main/ProjetoSaIot)
-[Link 2 - Wokwi]([https://github.com/alvescamila87/IoT-senai/tree/main/ProjetoSaIot](https://github.com/alvescamila87/IoT-senai/blob/main/esp32_projeto_iot_sa_wokwi_documentado.cpp ))
+* [Link 1 - Netbeans](https://github.com/alvescamila87/IoT-senai/tree/main/ProjetoSaIot)
+* [Link 2 - Wokwi](https://github.com/alvescamila87/IoT-senai/blob/main/esp32_projeto_iot_sa_wokwi_documentado.cpp)
 
 ## Imagens:
 * Prompt Java Swing FX:
