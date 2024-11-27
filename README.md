@@ -11,6 +11,10 @@ Este aplicativo se conecta a um broker MQTT, inscreve-se em um tópico para rece
 (como distância, temperatura e turbidez), e fornece uma interface gráfica para exibir os dados dos sensores. 
 Também permite salvar os dados recebidos em um banco de dados quando um botão é pressionado.
 
+## Links do projeto
+[Link 1 - Netbeans](https://github.com/alvescamila87/IoT-senai/tree/main/ProjetoSaIot)
+[Link 2 - Wokwi]([https://github.com/alvescamila87/IoT-senai/tree/main/ProjetoSaIot](https://github.com/alvescamila87/IoT-senai/blob/main/esp32_projeto_iot_sa_wokwi_documentado.cpp ))
+
 ## Imagens:
 * Prompt Java Swing FX:
 ![image](https://github.com/user-attachments/assets/cc205a9f-a05a-46b3-ae58-f145e9142c00)
